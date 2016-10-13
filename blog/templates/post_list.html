@@ -1,0 +1,91 @@
+{%extends "base.html"%}
+{% block content %}
+
+<div class='col-sm-8 col-sm-offset-2 '> 
+
+
+<p class='lead'>{{ title }}</p>
+
+<form method='GET' action='' class='row'>
+  <div class='col-sm-6 '>
+  <div class= 'input-group'>
+    <input class='form-control' type='text'  name='q' placeholder='Search posts' value='{{request.GET.q}}'/>
+    <span class='input-group-btn'>
+    <!--<input class='btn btn-default' type='submit' value='search'/>-->
+    <button class='btn btn-default' type='button'>Search <i class="fa fa-search" aria-hidden="true"></i>
+</button>
+  </span> 
+  </div>
+</div>
+</form>
+
+<div class="row">
+{% for obj in object_list %}
+
+
+
+
+
+  <div class="col-sm-12">
+    <div class="thumbnail">
+    	{% if obj.image %}
+      <!--<img src="..." alt="...">-->
+     
+      <img src='{{ obj.image.url }}' class='img-rounded' />
+      {% endif %}
+   
+
+      <div class="caption post-detail-item">
+        {%if obj.draft%}<h3>Draft</h3>{% endif %}
+        {% if obj.publish > today%}<h3>Future Post</h3>{% endif %}
+        <h3><a href='{{ obj.get_absolute_url }}'>{{ obj.title }}</a> <small>{{ obj.timestamp|timesince }} ago</small></h3>
+        <P>{% if obj.user.get_full_name %}Author:{{ obj.user.get_full_name }}{% endif %}</P>
+       {{ obj.get_markdown|truncatechars_html:120 }}
+        <p><a href='{{ obj.get_absolute_url }}' class="btn btn-primary" role="button">Read More</a></p> 
+        
+    </div>
+  
+  </div>
+</div> 
+
+
+{% endfor %}
+  <hr/>
+<div class="pagination">
+  <ul class = "pagination">
+    <span class="step-links">
+        {% if object_list.has_previous %}
+      
+          <ul class="pager">
+                    <li class="previous">
+                          <a href="?{{ page_request_var }}={{ object_list.previous_page_number }}&q={{ request.GET.q }}">Previous Posts &rarr;
+                    </li>
+                </ul></a>
+        {% endif %}
+
+        <span class="breadcrumb">
+            Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+        </span>
+
+        {% if object_list.has_next %}
+                  <ul class="pager">
+                    <li class="next">
+
+            <a href="?{{ page_request_var }}={{ object_list.next_page_number }}&q={{ request.GET.q}}">Older Posts &rarr;</a>
+          </li>
+        </ul></a>
+        {% endif %}
+    </span>
+  </ul> 
+</div>
+</div>
+</div> 
+
+
+
+
+{% endblock content %}
+
+
+
+
